@@ -5,6 +5,8 @@ interface SuggestItem {
   modificationDate: number
 }
 
+const MAX_SUGGEST_SIZE = 12
+
 let suggestItems: SuggestItem[]
 
 export function refresh(functionNames: string[], modificationDates: number[]): void {
@@ -25,4 +27,5 @@ export function guess(start: string): string[] {
       return aDate < bDate ? 1 : -1
     })
     .map(({ functionName }) => functionName)
+    .slice(0, MAX_SUGGEST_SIZE)
 }
