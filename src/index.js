@@ -23,12 +23,12 @@ function refresh(functionNames /*: string[]*/, modificationDates /*: number[]*/)
 function guess(start /*: string */) /*: string[] */ {
   return suggestItems
     .filter(({ functionName }) => functionName.startsWith(start))
-    .sort(({ modificationDate: aDate }, { modificationDate: bDate }) => {
-      if (aDate === bDate) {
+    .sort((a, b) => {
+      if (a.modificationDate === b.modificationDate) {
         return 0
       }
 
-      return aDate < bDate ? 1 : -1
+      return a.modificationDate < b.modificationDate ? 1 : -1
     })
     .map(({ functionName }) => functionName)
     .slice(0, MAX_SUGGEST_SIZE)
