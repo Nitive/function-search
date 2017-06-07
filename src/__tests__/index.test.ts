@@ -1,6 +1,13 @@
 import { refresh, guess } from '../'
 
-test('should return empty array if no data', () => {
-  refresh([], [])
-  expect(guess('something')).toEqual([])
+describe('refresh & guess', () => {
+  it('should works with empty arrays', () => {
+    refresh([], [])
+    expect(guess('something')).toEqual([])
+  })
+
+  it('should works with one elements arrays', () => {
+    refresh(['test'], [1])
+    expect(guess('te')).toEqual(['test'])
+  })
 })
