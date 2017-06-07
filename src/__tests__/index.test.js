@@ -1,4 +1,6 @@
-import { refresh, guess } from '../'
+// @flow
+
+const { refresh, guess } = require('../')
 
 describe('refresh & guess', () => {
   it('should works with empty arrays', () => {

@@ -1,4 +1,6 @@
-import { zip } from '../zip'
+// @flow
+
+const { zip } = require('../zip')
 
 describe('utils/zip', () => {
   it('should works with empty arrays', () => {

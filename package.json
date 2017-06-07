@@ -9,22 +9,9 @@
   "keywords": [],
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^19.2.4",
-    "jest": "^20.0.4",
-    "ts-jest": "^20.0.5",
-    "tslint": "^5.4.3",
-    "tslint-config-standard": "^5.0.2",
-    "typescript": "^2.3.4"
+    "flow-bin": "^0.47.0",
+    "flow-typed": "^2.1.2",
+    "jest": "^20.0.4"
   },
-  "dependencies": {},
-  "jest": {
-    "transform": {
-      ".ts": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testRegex": ".*test\\.(ts|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ]
-  }
+  "dependencies": {}
 }
