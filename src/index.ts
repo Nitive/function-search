@@ -17,5 +17,12 @@ export function refresh(functionNames: string[], modificationDates: number[]): v
 export function guess(start: string): string[] {
   return suggestItems
     .filter(({ functionName }) => functionName.startsWith(start))
+    .sort(({ modificationDate: aDate }, { modificationDate: bDate }) => {
+      if (aDate === bDate) {
+        return 0
+      }
+
+      return aDate < bDate ? 1 : -1
+    })
     .map(({ functionName }) => functionName)
 }

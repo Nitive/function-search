@@ -10,4 +10,9 @@ describe('refresh & guess', () => {
     refresh(['test'], [1])
     expect(guess('te')).toEqual(['test'])
   })
+
+  it('should sort functions by modification date', () => {
+    refresh(['test', 'test2'], [5, 10])
+    expect(guess('te')).toEqual(['test2', 'test'])
+  })
 })
