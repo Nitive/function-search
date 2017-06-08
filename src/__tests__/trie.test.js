@@ -8,27 +8,20 @@ import type { Trie } from '../trie'
 describe('trie', () => {
   it('insertValue should insert first value', () => {
     const trie /*: Trie */ = {
+      root: true,
       leaves: {},
     }
 
-    const value = { name: 'fa', date: '1' }
+    const value = { name: 'fa', date: 1 }
 
     const expectedTree /*: Trie */ = {
+      root: true,
       leaves: {
-        '1': {
-          values: [value],
-        },
         f: {
+          values: [value],
           leaves: {
-            '1': {
-              values: [value],
-            },
             a: {
-              leaves: {
-                '1': {
-                  values: [value],
-                },
-              },
+              values: [value],
             },
           },
         },
@@ -41,52 +34,32 @@ describe('trie', () => {
 
   it('insertValue should insert second value', () => {
     const trie /*: Trie */ = {
+      root: true,
       leaves: {
-        '1': {
-          values: [{ name: 'fa', date: '1' }],
-        },
         f: {
+          values: [{ name: 'fa', date: 1 }],
           leaves: {
-            '1': {
-              values: [{ name: 'fa', date: '1' }],
-            },
             a: {
-              leaves: {
-                '1': {
-                  values: [{ name: 'fa', date: '1' }],
-                },
-              },
+              values: [{ name: 'fa', date: 1 }],
             },
           },
         },
       },
     }
 
-    const value = { name: 'fb', date: '1' }
+    const value = { name: 'fb', date: 1 }
 
     const expectedTree /*: Trie */ = {
+      root: true,
       leaves: {
-        '1': {
-          values: [{ name: 'fa', date: '1' }, value],
-        },
         f: {
+          values: [{ name: 'fa', date: 1 }, value],
           leaves: {
-            '1': {
-              values: [{ name: 'fa', date: '1' }, value],
-            },
             a: {
-              leaves: {
-                '1': {
-                  values: [{ name: 'fa', date: '1' }],
-                },
-              },
+              values: [{ name: 'fa', date: 1 }],
             },
             b: {
-              leaves: {
-                '1': {
-                  values: [value],
-                },
-              },
+              values: [value],
             },
           },
         },
@@ -98,31 +71,19 @@ describe('trie', () => {
   })
 
   it('createTrie should work', () => {
-    const values = [{ name: 'fa', date: '1' }, { name: 'fb', date: '1' }]
+    const values = [{ name: 'fa', date: 1 }, { name: 'fb', date: 1 }]
 
     const expectedTree /*: Trie */ = {
+      root: true,
       leaves: {
-        '1': {
-          values,
-        },
         f: {
+          values: [{ name: 'fa', date: 1 }, { name: 'fb', date: 1 }],
           leaves: {
-            '1': {
-              values,
-            },
             a: {
-              leaves: {
-                '1': {
-                  values: [{ name: 'fa', date: '1' }],
-                },
-              },
+              values: [{ name: 'fa', date: 1 }],
             },
             b: {
-              leaves: {
-                '1': {
-                  values: [{ name: 'fb', date: '1' }],
-                },
-              },
+              values: [{ name: 'fb', date: 1 }],
             },
           },
         },

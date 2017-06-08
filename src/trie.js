@@ -3,54 +3,50 @@
 /*::
 type Value = {|
   name: string,
-  date: string,
+  date: number,
 |}
 
-export type Trie = {
-  leaves?: { [key: string]: Trie },
-  values?: Value[],
-}
+type SpectialTrie
+  = { values: Value[] }
+  | { root: true, leaves: Leaves }
+
+type Leaves = { [key: string]: Trie }
+
+export type Trie
+  = { leaves: Leaves } & SpectialTrie
 */
 
-function helper(rest /*: Value */, value /*: Value */, trie /*:? Trie */) /*: Trie */ {
-  const newTrie /*: Trie */ = {}
+function helper(rest /*: string */, value /*: Value */, trie /*:? Trie */) /*: Trie */ {
+  const newTrie /*: Trie */ = trie && trie.root
+    ? { root: true }
+    : { values: trie ? [...trie.values, value] : [value] }
   const leaves = trie && trie.leaves;
 
-  if (rest.name) {
-    const nameKey = rest.name[0]
-    const dateKey = rest.date[0]
+  if (rest) {
+    const nameKey = rest[0]
     newTrie.leaves = Object.assign({}, leaves, {
-      [nameKey]: helper({ name: rest.name.slice(1), date: rest.date }, value, leaves && leaves[nameKey]),
-      [dateKey]: helper({ name: '', date: rest.date.slice(1) }, value, leaves && leaves[dateKey])
+      [nameKey]: helper(rest.slice(1), value, leaves && leaves[nameKey]),
     })
-    return newTrie;
   }
 
-  if (rest.date) {
-    if (trie && trie.values) {
-      newTrie.values = trie.values
-    }
-    const dateKey = rest.date[0]
-    newTrie.leaves = Object.assign({}, leaves, {
-      [dateKey]: helper({ name: '', date: rest.date.slice(1) }, value, leaves && leaves[dateKey])
-    })
-    return newTrie;
-  }
-
-  if (trie && trie.values) {
-    newTrie.values = [...trie.values, value]
-  } else {
-    newTrie.values = [value]
-  }
   return newTrie;
 }
 
 function insertValue(value /*: Value */, trie /*: Trie */) /*: Trie */ {
-  return helper(value, value, trie)
+  return helper(value.name, value, trie)
 }
 
 function createTrie(values /*: Value[] */) /*: Trie */ {
-  return values.reduce((trie, value) => insertValue(value, trie), { leaves: {} })
+  return values.reduce((trie, value) => insertValue(value, trie), { root: true })
 }
 
-module.exports = { createTrie, insertValue }
+function findInTrie(start /*: string */, trie /*: Trie */) /*: Value[] */ {
+  const r = start.split('').reduce((trie, key) => {
+    return trie.leaves && trie.leaves[key]
+      ? trie.leaves[key]
+      : { values: [] }
+  }, trie)
+  return r.values
+}
+
+module.exports = { createTrie, insertValue, findInTrie }

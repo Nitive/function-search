@@ -1,36 +1,32 @@
 // @flow
 
 const { zip } = require('./utils/zip')
-
-/*::
-type SuggestItem = {|
-  functionName: string,
-  modificationDate: number,
-|}
-*/
+const { createTrie, findInTrie } = require('./trie')
+/* import type { Trie } from './trie' */
 
 const MAX_SUGGEST_SIZE = 12
 
-let suggestItems /*: SuggestItem[] */
+let trie /*: Trie */
 
 function refresh(functionNames /*: string[] */, modificationDates /*: number[] */) {
-  suggestItems = zip(functionNames, modificationDates).map(([name, date]) => ({
-    functionName: name,
-    modificationDate: date,
-  }))
+  const values = zip(functionNames, modificationDates)
+    .map(([name, date]) => ({
+      name,
+      date: date.toString().padStart(13, '0'),
+    }))
+  trie = createTrie(values)
 }
 
 function guess(start /*: string */) /*: string[] */ {
-  return suggestItems
-    .filter(({ functionName }) => functionName.startsWith(start))
+  return findInTrie(start, trie)
     .sort((a, b) => {
-      if (a.modificationDate === b.modificationDate) {
+      if (a.date === b.date) {
         return 0
       }
 
-      return a.modificationDate < b.modificationDate ? 1 : -1
+      return a.date < b.date ? 1 : -1
     })
-    .map(({ functionName }) => functionName)
+    .map(({ name }) => name)
     .slice(0, MAX_SUGGEST_SIZE)
 }
 
