@@ -10,15 +10,15 @@ type Value = {|
 
 export type Trie = {
   leaves?: { [key: string | number]: Trie },
-  value?: Value,
+  values?: Value[],
 }
 */
 
 const mapTrie = (f /*: (value: Value) => Value */, trie /*: Trie */) /*: Trie */ => {
   const newTrie /*: Trie */ = {}
-  const { value, leaves } = trie;
-  if (value) {
-    newTrie.value = f(value)
+  const { values, leaves } = trie;
+  if (values) {
+    newTrie.values = values.map(f)
   }
   if (leaves) {
     newTrie.leaves = mapObj((leaf /*: Trie */) => mapTrie(f, leaf), leaves)
@@ -26,8 +26,11 @@ const mapTrie = (f /*: (value: Value) => Value */, trie /*: Trie */) /*: Trie */
   return newTrie
 }
 
+function insertValue(value /*: Value */, trie /*: Trie */) /*: Trie */ {
+  return trie
+}
 
 function createTrie(values /*: Value[] */) /*: Trie */ {
 }
 
-module.exports = { createTrie, mapTrie }
+module.exports = { createTrie, mapTrie, insertValue }

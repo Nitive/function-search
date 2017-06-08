@@ -1,6 +1,6 @@
 // @flow
 
-const { createTrie, mapTrie } = require('../trie')
+const { createTrie, mapTrie, insertValue } = require('../trie')
 /*::
 import type { Trie } from '../trie'
 */
@@ -20,7 +20,7 @@ describe('trie', () => {
                       leaves: {
                         leaves: {
                           [2]: {
-                            value: { name: 'foo', date: 12 },
+                            values: [{ name: 'foo', date: 12 }],
                           },
                         },
                       },
@@ -31,7 +31,7 @@ describe('trie', () => {
                   leaves: {
                     leaves: {
                       [2]: {
-                        value: { name: 'foo', date: 12 },
+                        values: [{ name: 'foo', date: 12 }],
                       },
                     },
                   },
@@ -42,7 +42,7 @@ describe('trie', () => {
               leaves: {
                 leaves: {
                   [2]: {
-                    value: { name: 'foo', date: 12 },
+                    values: [{ name: 'foo', date: 12 }],
                   },
                 },
               },
@@ -52,7 +52,7 @@ describe('trie', () => {
             leaves: {
               leaves: {
                 [2]: {
-                  value: { name: 'foo', date: 12 },
+                  values: [{ name: 'foo', date: 12 }],
                 },
               },
             },
@@ -65,28 +65,28 @@ describe('trie', () => {
                 r: {
                   leaves: {
                     [3]: {
-                      value: { name: 'bar', date: 3 },
+                      values: [{ name: 'bar', date: 3 }],
                     },
                   },
                 },
                 z: {
                   leaves: {
                     [3]: {
-                      value: { name: 'bar', date: 3 },
+                      values: [{ name: 'bar', date: 3 }],
                     },
                   },
                 },
                 [3]: {
-                  value: { name: 'bar', date: 3 },
+                  values: [{ name: 'bar', date: 3 }],
                 },
               },
             },
             [3]: {
-              value: { name: 'bar', date: 3 },
+              values: [{ name: 'bar', date: 3 }],
             },
           },
           [3]: {
-            value: { name: 'bar', date: 3 },
+            values: [{ name: 'bar', date: 3 }],
           },
         },
       },
@@ -98,9 +98,9 @@ describe('trie', () => {
   it('mapTrie should work', () => {
     const trie /*: Trie */ = {
       leaves: {
-        b: { value: { name: 'b', date: 3 } },
+        b: { values: [{ name: 'b', date: 3 }] },
         f: {
-          value: { name: 'f', date: 4 },
+          values: [{ name: 'f', date: 4 }],
           leaves: {
             o: {
               leaves: {
@@ -109,7 +109,7 @@ describe('trie', () => {
                     [1]: {
                       leaves: {
                         [2]: {
-                          value: { name: 'foo', date: 12 },
+                          values: [{ name: 'foo', date: 12 }],
                         },
                       },
                     },
@@ -122,12 +122,11 @@ describe('trie', () => {
       },
     }
 
-
     const expectedTree /*: Trie */ = {
       leaves: {
-        b: { value: { name: 'b', date: 4 } },
+        b: { values: [{ name: 'b', date: 4 }] },
         f: {
-          value: { name: 'f', date: 5 },
+          values: [{ name: 'f', date: 5 }],
           leaves: {
             o: {
               leaves: {
@@ -136,7 +135,7 @@ describe('trie', () => {
                     [1]: {
                       leaves: {
                         [2]: {
-                          value: { name: 'foo', date: 13 },
+                          values: [{ name: 'foo', date: 13 }],
                         },
                       },
                     },
@@ -150,5 +149,62 @@ describe('trie', () => {
     }
 
     expect(mapTrie(x => ({ name: x.name, date: x.date + 1 }), trie)).toEqual(expectedTree)
+  })
+
+  it.only('insertValue should work', () => {
+    const trie /*: Trie */ = {
+      leaves: {
+        f: {
+          leaves: {
+            o: {
+              leaves: {
+                [1]: {
+                  values: [{ name: 'fo', date: 1 }],
+                },
+              },
+            },
+            [1]: {
+              values: [{ name: 'fo', date: 1 }],
+            },
+            [4]: {
+              values: [{ name: 'f', date: 4 }],
+            },
+          },
+        },
+      },
+    }
+
+    const value = { name: 'fa', date: 1 }
+
+    const expectedTree /*: Trie */ = {
+      leaves: {
+        f: {
+          leaves: {
+            o: {
+              leaves: {
+                [1]: {
+                  values: [{ name: 'fo', date: 1 }],
+                },
+              },
+            },
+            a: {
+              leaves: {
+                [1]: {
+                  values: [value],
+                },
+              },
+            },
+            [1]: {
+              values: [value, { name: 'fo', date: 1 }],
+            },
+            [4]: {
+              values: [{ name: 'f', date: 4 }],
+            },
+          },
+        },
+      },
+    }
+
+    expect(insertValue(value, trie)).toEqual(expectedTree)
   })
 })
