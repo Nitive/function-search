@@ -1,210 +1,135 @@
 // @flow
 
-const { createTrie, mapTrie, insertValue } = require('../trie')
+const { createTrie, insertValue } = require('../trie')
 /*::
 import type { Trie } from '../trie'
 */
 
 describe('trie', () => {
-  it('createTrie should work', () => {
-    const data = [{ name: 'foo', date: 12 }, { name: 'bar', date: 3 }, { name: 'baz', date: 3 }]
-    const expectedTrie /*: Trie */ = {
-      leaves: {
-        f: {
-          leaves: {
-            o: {
-              leaves: {
-                o: {
-                  leaves: {
-                    [1]: {
-                      leaves: {
-                        leaves: {
-                          [2]: {
-                            values: [{ name: 'foo', date: 12 }],
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-                [1]: {
-                  leaves: {
-                    leaves: {
-                      [2]: {
-                        values: [{ name: 'foo', date: 12 }],
-                      },
-                    },
-                  },
-                },
-              },
-            },
-            [1]: {
-              leaves: {
-                leaves: {
-                  [2]: {
-                    values: [{ name: 'foo', date: 12 }],
-                  },
-                },
-              },
-            },
-          },
-          [1]: {
-            leaves: {
-              leaves: {
-                [2]: {
-                  values: [{ name: 'foo', date: 12 }],
-                },
-              },
-            },
-          },
-        },
-        b: {
-          leaves: {
-            a: {
-              leaves: {
-                r: {
-                  leaves: {
-                    [3]: {
-                      values: [{ name: 'bar', date: 3 }],
-                    },
-                  },
-                },
-                z: {
-                  leaves: {
-                    [3]: {
-                      values: [{ name: 'bar', date: 3 }],
-                    },
-                  },
-                },
-                [3]: {
-                  values: [{ name: 'bar', date: 3 }],
-                },
-              },
-            },
-            [3]: {
-              values: [{ name: 'bar', date: 3 }],
-            },
-          },
-          [3]: {
-            values: [{ name: 'bar', date: 3 }],
-          },
-        },
-      },
-    }
-
-    expect(createTrie(data)).toEqual(expectedTrie)
-  })
-
-  it('mapTrie should work', () => {
+  it('insertValue should insert first value', () => {
     const trie /*: Trie */ = {
-      leaves: {
-        b: { values: [{ name: 'b', date: 3 }] },
-        f: {
-          values: [{ name: 'f', date: 4 }],
-          leaves: {
-            o: {
-              leaves: {
-                o: {
-                  leaves: {
-                    [1]: {
-                      leaves: {
-                        [2]: {
-                          values: [{ name: 'foo', date: 12 }],
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
+      leaves: {},
     }
+
+    const value = { name: 'fa', date: '1' }
 
     const expectedTree /*: Trie */ = {
       leaves: {
-        b: { values: [{ name: 'b', date: 4 }] },
-        f: {
-          values: [{ name: 'f', date: 5 }],
-          leaves: {
-            o: {
-              leaves: {
-                o: {
-                  leaves: {
-                    [1]: {
-                      leaves: {
-                        [2]: {
-                          values: [{ name: 'foo', date: 13 }],
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
+        '1': {
+          values: [value],
         },
-      },
-    }
-
-    expect(mapTrie(x => ({ name: x.name, date: x.date + 1 }), trie)).toEqual(expectedTree)
-  })
-
-  it.only('insertValue should work', () => {
-    const trie /*: Trie */ = {
-      leaves: {
         f: {
           leaves: {
-            o: {
-              leaves: {
-                [1]: {
-                  values: [{ name: 'fo', date: 1 }],
-                },
-              },
-            },
-            [1]: {
-              values: [{ name: 'fo', date: 1 }],
-            },
-            [4]: {
-              values: [{ name: 'f', date: 4 }],
-            },
-          },
-        },
-      },
-    }
-
-    const value = { name: 'fa', date: 1 }
-
-    const expectedTree /*: Trie */ = {
-      leaves: {
-        f: {
-          leaves: {
-            o: {
-              leaves: {
-                [1]: {
-                  values: [{ name: 'fo', date: 1 }],
-                },
-              },
+            '1': {
+              values: [value],
             },
             a: {
               leaves: {
-                [1]: {
+                '1': {
                   values: [value],
                 },
               },
             },
-            [1]: {
-              values: [value, { name: 'fo', date: 1 }],
+          },
+        },
+      },
+    }
+
+    const result = insertValue(value, trie)
+    expect(result).toEqual(expectedTree)
+  })
+
+  it('insertValue should insert second value', () => {
+    const trie /*: Trie */ = {
+      leaves: {
+        '1': {
+          values: [{ name: 'fa', date: '1' }],
+        },
+        f: {
+          leaves: {
+            '1': {
+              values: [{ name: 'fa', date: '1' }],
             },
-            [4]: {
-              values: [{ name: 'f', date: 4 }],
+            a: {
+              leaves: {
+                '1': {
+                  values: [{ name: 'fa', date: '1' }],
+                },
+              },
             },
           },
         },
       },
     }
 
-    expect(insertValue(value, trie)).toEqual(expectedTree)
+    const value = { name: 'fb', date: '1' }
+
+    const expectedTree /*: Trie */ = {
+      leaves: {
+        '1': {
+          values: [{ name: 'fa', date: '1' }, value],
+        },
+        f: {
+          leaves: {
+            '1': {
+              values: [{ name: 'fa', date: '1' }, value],
+            },
+            a: {
+              leaves: {
+                '1': {
+                  values: [{ name: 'fa', date: '1' }],
+                },
+              },
+            },
+            b: {
+              leaves: {
+                '1': {
+                  values: [value],
+                },
+              },
+            },
+          },
+        },
+      },
+    }
+
+    const result = insertValue(value, trie)
+    expect(result).toEqual(expectedTree)
+  })
+
+  it('createTrie should work', () => {
+    const values = [{ name: 'fa', date: '1' }, { name: 'fb', date: '1' }]
+
+    const expectedTree /*: Trie */ = {
+      leaves: {
+        '1': {
+          values,
+        },
+        f: {
+          leaves: {
+            '1': {
+              values,
+            },
+            a: {
+              leaves: {
+                '1': {
+                  values: [{ name: 'fa', date: '1' }],
+                },
+              },
+            },
+            b: {
+              leaves: {
+                '1': {
+                  values: [{ name: 'fb', date: '1' }],
+                },
+              },
+            },
+          },
+        },
+      },
+    }
+
+    const result = createTrie(values)
+    expect(result).toEqual(expectedTree)
   })
 })
