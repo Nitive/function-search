@@ -11,9 +11,9 @@ type SuggestItem = {|
 
 const MAX_SUGGEST_SIZE = 12
 
-let suggestItems /*: SuggestItem[]*/
+let suggestItems /*: SuggestItem[] */
 
-function refresh(functionNames /*: string[]*/, modificationDates /*: number[]*/) {
+function refresh(functionNames /*: string[] */, modificationDates /*: number[] */) {
   suggestItems = zip(functionNames, modificationDates).map(([name, date]) => ({
     functionName: name,
     modificationDate: date,

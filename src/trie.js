@@ -1,16 +1,33 @@
 // @flow
 
+const { mapObj } = require('./utils/mapObj')
+
 /*::
-export type Trie<T> = {
-  type: 'node',
-  leaves: { [key: string | number]: Trie<T> },
-} | {
-  type: 'target',
-  value: T,
+type Value = {|
+  name: string,
+  date: number,
+|}
+
+export type Trie = {
+  leaves?: { [key: string | number]: Trie },
+  value?: Value,
 }
 */
 
-function createTrie /*:: <T>*/(data /*: T*/) /*: Trie<T> */ {
+const mapTrie = (f /*: (value: Value) => Value */, trie /*: Trie */) /*: Trie */ => {
+  const newTrie /*: Trie */ = {}
+  const { value, leaves } = trie;
+  if (value) {
+    newTrie.value = f(value)
+  }
+  if (leaves) {
+    newTrie.leaves = mapObj((leaf /*: Trie */) => mapTrie(f, leaf), leaves)
+  }
+  return newTrie
 }
 
-module.exports = { createTrie }
+
+function createTrie(values /*: Value[] */) /*: Trie */ {
+}
+
+module.exports = { createTrie, mapTrie }

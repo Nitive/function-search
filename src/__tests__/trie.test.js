@@ -1,46 +1,48 @@
 // @flow
 
-const { createTrie } = require('../trie')
+const { createTrie, mapTrie } = require('../trie')
 /*::
 import type { Trie } from '../trie'
 */
 
 describe('trie', () => {
-  it('should convert to trie', () => {})
-  const data = [{ name: 'foo', date: 12 }, { name: 'bar', date: 3 }, { name: 'baz', date: 3 }]
-  const expectedTree /*: Trie<{ name: string, date: number }>*/ = {
-    type: 'node',
-    leaves: {
-      f: {
-        type: 'node',
-        leaves: {
-          o: {
-            type: 'node',
-            leaves: {
-              o: {
-                type: 'node',
-                leaves: {
-                  [1]: {
-                    leaves: {
-                      type: 'node',
+  it('createTrie should work', () => {
+    const data = [{ name: 'foo', date: 12 }, { name: 'bar', date: 3 }, { name: 'baz', date: 3 }]
+    const expectedTrie /*: Trie */ = {
+      leaves: {
+        f: {
+          leaves: {
+            o: {
+              leaves: {
+                o: {
+                  leaves: {
+                    [1]: {
                       leaves: {
-                        [2]: {
-                          type: 'target',
-                          value: { name: 'foo', date: 12 },
+                        leaves: {
+                          [2]: {
+                            value: { name: 'foo', date: 12 },
+                          },
                         },
                       },
                     },
                   },
                 },
-              },
-              [1]: {
-                leaves: {
-                  type: 'node',
+                [1]: {
                   leaves: {
-                    [2]: {
-                      type: 'target',
-                      value: { name: 'foo', date: 12 },
+                    leaves: {
+                      [2]: {
+                        value: { name: 'foo', date: 12 },
+                      },
                     },
+                  },
+                },
+              },
+            },
+            [1]: {
+              leaves: {
+                leaves: {
+                  [2]: {
+                    value: { name: 'foo', date: 12 },
                   },
                 },
               },
@@ -48,70 +50,105 @@ describe('trie', () => {
           },
           [1]: {
             leaves: {
-              type: 'node',
               leaves: {
                 [2]: {
-                  type: 'target',
                   value: { name: 'foo', date: 12 },
                 },
               },
             },
           },
         },
-        [1]: {
+        b: {
           leaves: {
-            type: 'node',
-            leaves: {
-              [2]: {
-                type: 'target',
-                value: { name: 'foo', date: 12 },
+            a: {
+              leaves: {
+                r: {
+                  leaves: {
+                    [3]: {
+                      value: { name: 'bar', date: 3 },
+                    },
+                  },
+                },
+                z: {
+                  leaves: {
+                    [3]: {
+                      value: { name: 'bar', date: 3 },
+                    },
+                  },
+                },
+                [3]: {
+                  value: { name: 'bar', date: 3 },
+                },
               },
             },
-          },
-        },
-      },
-      b: {
-        type: 'node',
-        leaves: {
-          a: {
-            type: 'node',
-            leaves: {
-              r: {
-                type: 'node',
-                leaves: {
-                  [3]: {
-                    type: 'target',
-                    value: { name: 'bar', date: 3 },
-                  },
-                },
-              },
-              z: {
-                type: 'node',
-                leaves: {
-                  [3]: {
-                    type: 'target',
-                    value: { name: 'bar', date: 3 },
-                  },
-                },
-              },
-              [3]: {
-                type: 'target',
-                value: { name: 'bar', date: 3 },
-              },
+            [3]: {
+              value: { name: 'bar', date: 3 },
             },
           },
           [3]: {
-            type: 'target',
             value: { name: 'bar', date: 3 },
           },
         },
-        [3]: {
-          type: 'target',
-          value: { name: 'bar', date: 3 },
+      },
+    }
+
+    expect(createTrie(data)).toEqual(expectedTrie)
+  })
+
+  it('mapTrie should work', () => {
+    const trie /*: Trie */ = {
+      leaves: {
+        b: { value: { name: 'b', date: 3 } },
+        f: {
+          value: { name: 'f', date: 4 },
+          leaves: {
+            o: {
+              leaves: {
+                o: {
+                  leaves: {
+                    [1]: {
+                      leaves: {
+                        [2]: {
+                          value: { name: 'foo', date: 12 },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
-    },
-  }
+    }
 
-  expect(createTrie(data)).toEqual(expectedTree)
+
+    const expectedTree /*: Trie */ = {
+      leaves: {
+        b: { value: { name: 'b', date: 4 } },
+        f: {
+          value: { name: 'f', date: 5 },
+          leaves: {
+            o: {
+              leaves: {
+                o: {
+                  leaves: {
+                    [1]: {
+                      leaves: {
+                        [2]: {
+                          value: { name: 'foo', date: 13 },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }
+
+    expect(mapTrie(x => ({ name: x.name, date: x.date + 1 }), trie)).toEqual(expectedTree)
+  })
 })
